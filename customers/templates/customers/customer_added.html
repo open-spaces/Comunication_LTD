@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Customer added — Comunication_LTD{% endblock %}
+
+{% block content %}
+<h1>Customer added</h1>
+
+<p>The following customer was added successfully:</p>
+
+<div style="padding: 20px; background: #ecf0f1; border-radius: 4px; font-size: 18px;">
+    {% comment %}
+        This is the Stored XSS sink described in Part B section 1.
+        In VULNERABLE_MODE, |safe disables auto-escaping and lets injected
+        <script> tags execute. In secure mode, Django's auto-escaping renders
+        the literal string.
+
+        Mitigation per spec: "פתרון נגד הפרצות בסעיף 1 על ידי שימוש בקידוד של תווים מיוחדים"
+        — i.e., HTML-encode special characters. Django's auto-escape does this
+        by default; we just stop overriding it.
+    {% endcomment %}
+    {% if VULNERABLE_MODE %}
+        <strong>{{ added_name|safe }}</strong>
+    {% else %}
+        <strong>{{ added_name }}</strong>
+    {% endif %}
+</div>
+
+<div class="link-row">
+    <a href="{% url 'customers:add' %}">Add another</a> ·
+    <a href="{% url 'customers:list' %}">View all customers</a>
+</div>
+{% endblock %}

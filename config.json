@@ -1,0 +1,23 @@
+{
+    "password_policy": {
+        "min_length": 10,
+        "require_uppercase": true,
+        "require_lowercase": true,
+        "require_digits": true,
+        "require_special": true,
+        "special_chars": "!@#$%^&*()_+-=[]{}|;:,.<>?/~`",
+        "history_count": 3,
+        "dictionary_check": true,
+        "dictionary_file": "common_passwords.txt",
+        "max_login_attempts": 3,
+        "lockout_minutes": 15
+    },
+    "reset_token": {
+        "algorithm": "sha1",
+        "ttl_minutes": 15
+    },
+    "hmac": {
+        "algorithm": "sha256",
+        "salt_bytes": 16
+    }
+}

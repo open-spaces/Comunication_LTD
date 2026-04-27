@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Communication_LTD{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            background: #f5f6fa;
+            color: #2c3e50;
+        }
+        .navbar {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a { color: white; text-decoration: none; margin-right: 15px; }
+        .navbar a:hover { text-decoration: underline; }
+        .nav-brand { font-weight: bold; font-size: 18px; }
+        .vuln-banner {
+            background: #c0392b;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .secure-banner {
+            background: #27ae60;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        h1, h2 { color: #2c3e50; }
+        label { display: block; margin-top: 15px; font-weight: 600; }
+        input[type="text"], input[type="email"], input[type="password"],
+        input[type="tel"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        button, input[type="submit"] {
+            background: #2980b9;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        button:hover, input[type="submit"]:hover { background: #21618c; }
+        .messages { margin-bottom: 20px; }
+        .alert {
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .alert-error { background: #fdecea; color: #c0392b; border: 1px solid #f5b7b1; }
+        .alert-success { background: #eafaf1; color: #27ae60; border: 1px solid #abebc6; }
+        .alert-info { background: #ebf5fb; color: #2980b9; border: 1px solid #a9cce3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background: #ecf0f1; }
+        .helper { color: #7f8c8d; font-size: 13px; margin-top: 5px; }
+        .link-row { margin-top: 20px; font-size: 14px; }
+        .link-row a { color: #2980b9; }
+    </style>
+</head>
+<body>
+    {% if VULNERABLE_MODE %}
+    <div class="vuln-banner">
+        ⚠ VULNERABLE MODE ENABLED — this build deliberately contains XSS &amp; SQLi flaws (Part B vulnerable submission)
+    </div>
+    {% else %}
+    <div class="secure-banner">
+        ✓ SECURE MODE — XSS &amp; SQLi mitigations active (Part B secure submission)
+    </div>
+    {% endif %}
+
+    <nav class="navbar">
+        <span class="nav-brand">Comunication_LTD</span>
+        <div>
+            {% if current_user %}
+                <a href="{% url 'customers:list' %}">Customers</a>
+                <a href="{% url 'customers:add' %}">Add customer</a>
+                <a href="{% url 'accounts:change_password' %}">Change password</a>
+                <span style="margin-right: 15px;">Hello, {{ current_user.username }}</span>
+                <a href="{% url 'accounts:logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}">Login</a>
+                <a href="{% url 'accounts:register' %}">Register</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="container">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

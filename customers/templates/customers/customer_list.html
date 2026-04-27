@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Customers — Comunication_LTD{% endblock %}
+
+{% block content %}
+<h1>Customers</h1>
+
+<form method="get" action="{% url 'customers:list' %}" style="margin-bottom: 20px;">
+    <label for="q">Search</label>
+    <input type="text" id="q" name="q" value="{{ query }}" placeholder="Name or email">
+    <button type="submit">Search</button>
+</form>
+
+<a href="{% url 'customers:add' %}">+ Add customer</a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in customers %}
+        <tr>
+            {% comment %}
+                Stored XSS sink #2 — list view. In vulnerable mode the value is
+                rendered |safe to demonstrate persistence across views.
+            {% endcomment %}
+            {% if VULNERABLE_MODE %}
+                <td>{{ c.full_name|safe }}</td>
+                <td>{{ c.email|safe }}</td>
+                <td>{{ c.phone|safe }}</td>
+                <td>{{ c.address|safe }}</td>
+            {% else %}
+                <td>{{ c.full_name }}</td>
+                <td>{{ c.email }}</td>
+                <td>{{ c.phone }}</td>
+                <td>{{ c.address }}</td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" style="text-align:center; color:#7f8c8d;">No customers yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Add customer — Comunication_LTD{% endblock %}
+
+{% block content %}
+<h1>Add customer</h1>
+
+<form method="post" action="{% url 'customers:add' %}">
+    {% csrf_token %}
+
+    <label for="full_name">Full name</label>
+    <input type="text" id="full_name" name="full_name" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="phone">Phone</label>
+    <input type="tel" id="phone" name="phone">
+
+    <label for="address">Address</label>
+    <input type="text" id="address" name="address">
+
+    <label for="sector">Sector</label>
+    <select id="sector" name="sector">
+        <option value="">— none —</option>
+        {% for s in sectors %}
+        <option value="{{ s.id }}">{{ s.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="package">Internet package</label>
+    <select id="package" name="package">
+        <option value="">— none —</option>
+        {% for p in packages %}
+        <option value="{{ p.id }}">{{ p.name }} — {{ p.speed_mbps }} Mbps</option>
+        {% endfor %}
+    </select>
+
+    <label for="notes">Notes</label>
+    <textarea id="notes" name="notes" rows="4"></textarea>
+
+    <button type="submit">Add customer</button>
+</form>
+{% endblock %}
