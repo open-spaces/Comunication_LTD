@@ -80,9 +80,48 @@ VULNERABLE_MODE=0 python manage.py runserver
 
 Open http://127.0.0.1:8000/ — you'll be redirected to the register/login flow.
 
-The reset-password email is printed to the **server console** (we use Django's
-`console` email backend in dev). To use real SMTP, edit `EMAIL_BACKEND` in
-`settings.py`.
+### 5. Email delivery
+
+By default the reset-password token prints to the **server console** (Django's
+`console` email backend). To send real email, set SMTP env vars — `settings.py`
+auto-selects the SMTP backend when `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD`
+are both present, otherwise it falls back to console.
+
+**Gmail SMTP (recommended for the demo):**
+
+1. Enable **2-Step Verification** on your Google account
+   (https://myaccount.google.com/security). This is required to create app
+   passwords.
+2. Generate an **App Password** at https://myaccount.google.com/apppasswords
+   (choose "Mail" / "Other"). Google shows it as 4 groups of 4 characters
+   separated by spaces.
+3. Copy `.env.example` to `.env` and fill in:
+
+   ```ini
+   EMAIL_HOST_USER=you@gmail.com
+   EMAIL_HOST_PASSWORD="xxxx xxxx xxxx xxxx"   # 16-char app password — quote it!
+   DEFAULT_FROM_EMAIL=you@gmail.com
+   ```
+
+   ⚠ The quotes around `EMAIL_HOST_PASSWORD` are required because the value
+   contains spaces — without them, `source .env` parses the rest of the password
+   as separate shell commands.
+
+4. Load `.env` and run:
+
+   ```bash
+   set -a; source .env; set +a
+   python manage.py runserver
+   ```
+
+Gmail will rewrite the `From:` header to the authenticated `EMAIL_HOST_USER`
+regardless of `DEFAULT_FROM_EMAIL` — this is anti-spoofing behavior, not a bug.
+
+**Other SMTP providers:** override defaults via env vars
+`EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USE_TLS` / `EMAIL_USE_SSL`,
+`EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`.
+
+`.env` is in `.gitignore`; never commit credentials.
 
 ---
 
@@ -234,10 +273,11 @@ You should be ready to defend these in your write-up:
    who knows valid usernames can lock legitimate users out (DoS). A real
    system pairs per-account counters with per-IP rate limits.
 
-7. **Email is a console backend.** The reset token prints to the Django dev
-   server's stdout. To use real SMTP, configure `EMAIL_HOST`, `EMAIL_PORT`,
-   `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, and switch `EMAIL_BACKEND` to
-   `django.core.mail.backends.smtp.EmailBackend`.
+7. **Email defaults to a console backend.** With no env vars set, the reset
+   token prints to the Django dev server's stdout. Set `EMAIL_HOST_USER` and
+   `EMAIL_HOST_PASSWORD` (plus optional `EMAIL_HOST` / `EMAIL_PORT` /
+   `EMAIL_USE_TLS`) and `settings.py` auto-selects the SMTP backend. See
+   **Setup → step 5** for the Gmail App-Password walkthrough.
 
 ---
 

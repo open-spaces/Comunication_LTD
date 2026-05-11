@@ -3,14 +3,18 @@
 
 {% block content %}
 <h1>Customers</h1>
+<p class="helper">All customers in the system. Use search to filter by name or email.</p>
 
-<form method="get" action="{% url 'customers:list' %}" style="margin-bottom: 20px;">
-    <label for="q">Search</label>
-    <input type="text" id="q" name="q" value="{{ query }}" placeholder="Name or email">
-    <button type="submit">Search</button>
-</form>
-
-<a href="{% url 'customers:add' %}">+ Add customer</a>
+<div class="toolbar">
+    <form method="get" action="{% url 'customers:list' %}" style="display:flex; gap:8px; align-items:flex-end;">
+        <div style="flex:1;">
+            <label for="q">Search</label>
+            <input type="text" id="q" name="q" value="{{ query }}" placeholder="Name or email">
+        </div>
+        <button type="submit">Search</button>
+    </form>
+    <a href="{% url 'customers:add' %}" class="btn-primary">+ Add customer</a>
+</div>
 
 <table>
     <thead>

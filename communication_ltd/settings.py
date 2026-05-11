@@ -117,11 +117,33 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ---------------------------------------------------------------------------
-# Email - console backend for development. The reset token will print to stdout.
-# Swap to SMTP for real email delivery.
+# Email
+#
+# If EMAIL_HOST_USER is set, send real mail via SMTP (Gmail defaults).
+# Otherwise fall back to the console backend (token prints to stdout).
+#
+# Gmail setup:
+#   1. Enable 2-Step Verification on the Google account.
+#   2. Create an App Password at https://myaccount.google.com/apppasswords
+#   3. export EMAIL_HOST_USER="you@gmail.com"
+#      export EMAIL_HOST_PASSWORD="xxxx xxxx xxxx xxxx"   # 16-char app password
 # ---------------------------------------------------------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@comunication-ltd.example'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', '1') == '1'
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', '0') == '1'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_TIMEOUT = int(os.environ.get('EMAIL_TIMEOUT', '20'))
+
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    DEFAULT_FROM_EMAIL = os.environ.get(
+        'DEFAULT_FROM_EMAIL', 'noreply@comunication-ltd.example'
+    )
 
 # Login redirect
 LOGIN_URL = '/accounts/login/'
