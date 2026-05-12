@@ -232,18 +232,6 @@ removes `|safe` and lets Django's default auto-escaping HTML-encode `<`, `>`,
 
 ---
 
-## Running the full smoke test
-
-The included `smoke_test.py` exercises every Part A feature and confirms each
-Part B attack works in vulnerable mode and is blocked in secure mode.
-
-```bash
-USE_SQLITE=1 VULNERABLE_MODE=1 python smoke_test.py
-USE_SQLITE=1 VULNERABLE_MODE=0 python smoke_test.py
-```
-
----
-
 ## Caveats and honest disclosures
 
 You should be ready to defend these in your write-up:
@@ -287,7 +275,6 @@ You should be ready to defend these in your write-up:
 communication_ltd/
 ├── manage.py
 ├── seed.py                     # populates sectors + packages
-├── smoke_test.py               # end-to-end verification
 ├── config.json                 # password policy (admin-editable)
 ├── common_passwords.txt        # dictionary blocklist
 ├── requirements.txt
